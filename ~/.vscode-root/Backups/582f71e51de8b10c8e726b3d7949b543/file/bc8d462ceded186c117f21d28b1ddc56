@@ -1,0 +1,19 @@
+file:///Users/macbookpro/Desktop/My%20Mac/Data/zinFinance/ZeroHex-API/main.js {"mtime":1623419621877,"ctime":1623415933576,"size":503,"etag":"37374f6s8g7","orphaned":false}
+const express = require('express');
+const app = express();
+var cors = require('cors'); 
+app.use(cors());
+const authController = require('./auth/AuthController');
+
+app.use('/api/users', authController);
+
+process.on('unhandledRejection', error => {
+   //Will print "unhandledRejection err is not defined"
+  console.log( error.message);
+});
+
+
+var server = app.listen(4000, () => {
+    console.log("Server is listening on port::", server.address().port);
+})
+
