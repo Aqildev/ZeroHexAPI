@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 var cors = require('cors'); 
 app.use(cors());
-const authController = require('./auth/AuthController');
+const UserControllers = require('./auth/UserControllers');
 const config=require('./configuration/config')
 
 
-app.use('/api/users', authController);
+app.use('/api/users', UserControllers);
 
 process.on('unhandledRejection', error => {
    //Will print "unhandledRejection err is not defined"

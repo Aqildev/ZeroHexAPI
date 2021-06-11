@@ -1,3 +1,4 @@
+file:///Users/macbookpro/Desktop/My%20Mac/Data/zinFinance/ZeroHex-API/auth/AuthController.js {"mtime":1623423430764,"ctime":1623416107772,"size":1601,"etag":"37379qbs61kk","orphaned":false}
 var express = require('express');
 var sql = require("mssql");
 var router = express.Router();
@@ -28,7 +29,7 @@ router.get('/getUser', async function (req, res) {
             throw err;
         } else {
             try {
-            var query="SELECT * FROM users where metamask="+metamask;
+            var query=`SELECT * FROM users where metamask=0x12E8613F1d980FD0543ECEBB2dab9533C589250F`;
             console.log( query);
             sql.query(query,(err,response)=>{
                 if(err){
