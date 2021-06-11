@@ -6,9 +6,6 @@ router.use(bodyParser.json());
 const UserFunctions=require('./UserFunctions');
 const { query, response } = require('express');
 
-//SQL connection Credentials
-//---------------------------
-
 //---------------------------
 //Get Users detail by their Metamask!
 router.get('/getUserDetail', async function (req, res) {
@@ -30,6 +27,6 @@ router.get('/getUserDetail', async function (req, res) {
       res.status(404).send({success:false,error:error})
 }
 });
-
-
+//----------------------------------------------
+//----------------------------------------------
 module.exports = router;
