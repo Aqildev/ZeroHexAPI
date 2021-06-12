@@ -10,9 +10,6 @@ const { query, response } = require('express');
 //Get Users detail by their Metamask!
 router.get('/getUserDetail', async function (req, res) {
  const metamask=req.query.metamask;
- var userInfo={
-
- }
   try {
     if(!metamask||metamask==0||metamask==null){
         throw "Invalid Address Provided";
