@@ -1,5 +1,8 @@
 var sql = require("mssql");
 const config=require('../configuration/config');
+
+//This Function will make a connection with our database
+//----------------------------------------------------------------------
 var checkDatabaseConnection = async (address) => {
     return new Promise(async (resolve, reject) => {
         sql.connect(config.config, async function (err) {
@@ -11,6 +14,9 @@ var checkDatabaseConnection = async (address) => {
         });
     })
 }
+
+//This function will query data from database according to query request
+//----------------------------------------------------------------------
 var queryData = async (query) => {
    return new Promise(async (resolve, reject) => {
     console.log("isConnection",await checkDatabaseConnection())
@@ -27,8 +33,10 @@ var queryData = async (query) => {
     }
    })
 }
-
-
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 module.exports = {
     queryData: queryData,
 }
