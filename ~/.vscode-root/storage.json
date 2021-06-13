@@ -36,7 +36,8 @@
                             "items": [
                                 {
                                     "id": "workbench.action.reopenClosedEditor",
-                                    "label": "&&Reopen Closed Editor"
+                                    "label": "&&Reopen Closed Editor",
+                                    "enabled": false
                                 },
                                 {
                                     "id": "vscode.menubar.separator"
@@ -285,8 +286,7 @@
                             "items": [
                                 {
                                     "id": "workbench.action.toggleFullScreen",
-                                    "label": "&&Full Screen",
-                                    "checked": true
+                                    "label": "&&Full Screen"
                                 },
                                 {
                                     "id": "workbench.action.toggleZenMode",
@@ -1447,12 +1447,11 @@
             "folder": "file:///Users/macbookpro/Desktop/My%20Mac/Data/zinFinance/ZeroHex-API",
             "backupPath": "/Users/macbookpro/Desktop/My Mac/Data/zinFinance/ZeroHex-API/~/.vscode-root/Backups/582f71e51de8b10c8e726b3d7949b543",
             "uiState": {
-                "mode": 3,
-                "display": 2077750329,
-                "width": 1024,
-                "height": 768,
+                "mode": 1,
                 "x": 208,
-                "y": 66
+                "y": 66,
+                "width": 1024,
+                "height": 768
             }
         },
         "openedWindows": []
