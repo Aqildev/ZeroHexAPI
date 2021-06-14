@@ -38,7 +38,7 @@ router.post('/signup',async function (req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const metamaskAddress=req.body.metamaskAddress;
-    const noOfZin=req.body.noOfZin;
+    const zerohexToken=req.body.zerohexToken;
     const phoneNo=req.body.phoneNo;
     if (!metamaskAddress || metamaskAddress === "" || metamaskAddress === undefined) {
       return res.send({ success: false, message: "Invalid metamask Adddress" })
@@ -52,7 +52,7 @@ router.post('/signup',async function (req, res) {
           if(response?.result?.recordsets[0].length>0){
               res.send({ success: true, token: token });
         }else{
-           const query= `INSERT INTO users(username,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username}','${password}','${metamaskAddress}',${noOfZin},'${new Date().toISOString()}','${phoneNo}')`
+           const query= `INSERT INTO users(username,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username}','${password}','${metamaskAddress}',${zerohexToken},'${new Date().toISOString()}','${phoneNo}')`
            const response=await UserFunctions?.queryData(query);
            if(response.success){
             res.send({success:true,token:token});
