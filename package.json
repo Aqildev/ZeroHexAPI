@@ -4,7 +4,7 @@
   "description": "This repository contains NodeJS API of ZeroHex Marketplace.",
   "main": "main.js",
   "scripts": {
-    "start": "node main"
+    "start": "node server"
   },
   "repository": {
     "type": "git",
