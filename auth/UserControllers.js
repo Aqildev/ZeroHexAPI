@@ -52,7 +52,7 @@ router.post('/signup',async function (req, res) {
           if(response?.result?.recordsets[0].length>0){
               res.send({ success: true, token: token });
         }else{
-           const query= `INSERT INTO users(username,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username}','${password}','${metamaskAddress}',${noOfZin},${date},'${phoneNo}')`
+           const query= `INSERT INTO users(username,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username}','${password}','${metamaskAddress}',${noOfZin},'${new Date().toISOString()}','${phoneNo}')`
            const response=await UserFunctions?.queryData(query);
            if(response.success){
             res.send({success:true,token:token});
