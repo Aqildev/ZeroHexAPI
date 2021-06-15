@@ -7,7 +7,7 @@ var checkDatabaseConnection = async (address) => {
     return new Promise(async (resolve, reject) => {
         sql.connect(config.config, async function (err) {
               if (err) {
-                reject(false);
+                resolve(false);
               } else {
                 resolve(true)          
               } 
