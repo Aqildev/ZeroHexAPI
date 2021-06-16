@@ -1,10 +1,10 @@
-file:///Users/macbookpro/Desktop/My%20Mac/Data/zinFinance/ZeroHex-API/auth/UserRoutes.js {"mtime":1623882086848,"ctime":1623881383211,"size":499,"etag":"3740kb7p7g3","orphaned":false}
+file:///Users/macbookpro/Desktop/My%20Mac/Data/zinFinance/ZeroHex-API/auth/UserRoutes.js {"mtime":1623883399293,"ctime":1623881383211,"size":501,"etag":"3740m72csg5","orphaned":false}
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
-const {upload}=require('./profileImage')
+const {upload}=require('./uploadFile')
 const {getUserDetail,signup,update}=require('./UserControllers');
 console.log(getUserDetail)
 router.route('/getUserDetail').get(getUserDetail);

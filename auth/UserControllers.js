@@ -4,7 +4,6 @@ const multer=require('multer');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokenss
 const {queryData}=require('./UserFunctions');
 const ErrorResponse=require("../utils/errorResponse");
-const {upload}=require('./uploadFile')
 const {getUserData,signupInsertData,updateUser}=require('./UserQueries');
 //--------------------------------------------------------------------------
 //Get Users detail by their Metamask!
