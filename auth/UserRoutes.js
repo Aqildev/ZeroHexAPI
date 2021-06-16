@@ -6,5 +6,6 @@ router.use(bodyParser.json());
 const {getUserDetail,signup}=require('./UserControllers');
 console.log(getUserDetail)
 router.route('/getUserDetail').get(getUserDetail);
+router.route('/update').post(signup);
 router.route('/signup').post(signup);
 module.exports = router;

@@ -11,7 +11,7 @@ var getUserData = async (metamask) => {
 var signupInsertData = async (username,email,password,metamaskAddress,zerohexToken,phoneNo) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query= `INSERT INTO users(username,email,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username}','${email}','${password}','${metamaskAddress}',${zerohexToken},'${new Date().toISOString()}','${phoneNo}')`
+            const query= `INSERT INTO users(username,email,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username||null}','${email||null}','${password||null}','${metamaskAddress||null}',${zerohexToken||null},'${new Date().toISOString()}','${phoneNo||null}')`
             resolve(query);
         } catch (error) {
             reject(error);
