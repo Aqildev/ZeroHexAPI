@@ -19,23 +19,11 @@ var checkDatabaseConnection = async (address) => {
 var queryData = async (query) => {
     return new Promise(async (resolve, reject) => {
         console.log("isConnection", await checkDatabaseConnection())
-        // if(await checkDatabaseConnection()){
-        //     sql.query(query,(err,response)=>{
-        //         if(err){
-        //             console.log("Error",err)
-        //             reject(err);
-        //         }else{
-        //             resolve({success:true,result:response})
-        //         }
-        //     })  
-        // }else{
-        //     reject("Database Connection Isn't Established!")
-        // }
-        try {
+        if (await checkDatabaseConnection()) {
             sql.query(query, (err, response) => {
                 if (err) {
                     console.log("Error", err)
-                    reject(err);
+                    reject(err.message);
                 } else {
                     resolve({
                         success: true,
@@ -43,8 +31,8 @@ var queryData = async (query) => {
                     })
                 }
             })
-        } catch (error) {
-            reject(error)
+        } else {
+            reject("Database Connection Isn't Established!")
         }
     })
 }
