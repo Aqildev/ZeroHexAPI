@@ -76,6 +76,7 @@ exports.signup = async (req, res, next) => {
 };
 //Update User data
 exports.update = async (req, res, next) => {
+  console.log("called!")
   const metamaskAddress = req.body.metamaskAddress;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
