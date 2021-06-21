@@ -1,15 +1,15 @@
 var sql = require("mssql");
-const config=require('../configuration/config');
+const config = require('../configuration/config');
 //This Function will make a connection with our database
 //----------------------------------------------------------------------
 var checkDatabaseConnection = async (address) => {
     return new Promise(async (resolve, reject) => {
         sql.connect(config.config, async function (err) {
-              if (err) {
+            if (err) {
                 resolve(false);
-              } else {
-                resolve(true)          
-              } 
+            } else {
+                resolve(true)
+            }
         });
     })
 }
@@ -17,33 +17,36 @@ var checkDatabaseConnection = async (address) => {
 //This function will query data from database according to query request
 //----------------------------------------------------------------------
 var queryData = async (query) => {
-   return new Promise(async (resolve, reject) => {
-    console.log("isConnection",await checkDatabaseConnection())
-    // if(await checkDatabaseConnection()){
-    //     sql.query(query,(err,response)=>{
-    //         if(err){
-    //             console.log("Error",err)
-    //             reject(err);
-    //         }else{
-    //             resolve({success:true,result:response})
-    //         }
-    //     })  
-    // }else{
-    //     reject("Database Connection Isn't Established!")
-    // }
-    try {
-        sql.query(query,(err,response)=>{
-                    if(err){
-                        console.log("Error",err)
-                        reject(err);
-                    }else{
-                        resolve({success:true,result:response})
-                    }
-                })  
-    } catch (error) {
-        reject(error)
-    }
-   })
+    return new Promise(async (resolve, reject) => {
+        console.log("isConnection", await checkDatabaseConnection())
+        // if(await checkDatabaseConnection()){
+        //     sql.query(query,(err,response)=>{
+        //         if(err){
+        //             console.log("Error",err)
+        //             reject(err);
+        //         }else{
+        //             resolve({success:true,result:response})
+        //         }
+        //     })  
+        // }else{
+        //     reject("Database Connection Isn't Established!")
+        // }
+        try {
+            sql.query(query, (err, response) => {
+                if (err) {
+                    console.log("Error", err)
+                    reject(err);
+                } else {
+                    resolve({
+                        success: true,
+                        result: response
+                    })
+                }
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
 }
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -51,6 +54,5 @@ var queryData = async (query) => {
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 module.exports = {
-   queryData
+    queryData
 }
-
