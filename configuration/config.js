@@ -8,4 +8,8 @@ var config = {
     encrypt: true // Use this if you're on Windows Azure
   }
 };
-exports.config = config;
+module.exports = {
+  secret: '6ubr]h%d{Te(yWBe5T5`kk=.hH}^?T*V',
+  config
+};
+// exports.config = config;

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+const verifyToken = require('./veriyToken');
 router.use(bodyParser.urlencoded({
     extended: false
 }));
@@ -14,7 +15,7 @@ const {
     update
 } = require('./UserControllers');
 console.log(getUserDetail)
-router.route('/getUserDetail').get(getUserDetail);
+router.route('/getUserDetail').get(verifyToken, getUserDetail);
 router.route('/update').post(upload.single("image"), update);
 router.route('/signup').post(signup);
 module.exports = router;

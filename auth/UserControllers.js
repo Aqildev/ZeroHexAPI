@@ -7,6 +7,9 @@ const {
 } = require('./UserFunctions');
 const ErrorResponse = require("../utils/errorResponse");
 const {
+  secret
+} = require('../configuration/config');
+const {
   getUserData,
   signupInsertData,
   updateUser
@@ -20,12 +23,12 @@ exports.getUserDetail = async (req, res, next) => {
       next(new ErrorResponse(`Invalid metamask address`, 422))
     };
     const response = await queryData(await getUserData(metamask));
-    if (response ? .result ? .recordsets[0].length > 0) {
+    if (response.result.recordsets[0].length > 0) {
       res.status(200).send({
-        success: response ? .success,
-        result: response ? .result ? .recordsets
+        success: response.success,
+        result: response.result.recordsets
       });
-    } else if (response ? .result ? .recordsets[0].length == 0) {
+    } else if (response.result.recordsets[0].length == 0) {
       next(new ErrorResponse(`no record found against this metamask`, 400))
     }
   } catch (error) {
@@ -51,10 +54,10 @@ exports.signup = async (req, res, next) => {
     const response = await queryData(await getUserData(metamaskAddress));
     var token = jwt.sign({
       id: metamaskAddress
-    }, metamaskAddress, {
+    }, secret, {
       expiresIn: 86400 // expires in 24 hours
     });
-    if (response ? .result ? .recordsets[0].length > 0) {
+    if (response.result.recordsets[0].length > 0) {
       res.send({
         success: true,
         token: token
