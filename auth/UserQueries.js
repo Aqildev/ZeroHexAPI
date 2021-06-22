@@ -1,4 +1,3 @@
-const uuid = require("uuid");
 var getUserData = async (metamask) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -43,7 +42,7 @@ var insertUserProfile = async (id) => {
 var signupInsertData = async (username, email, password, metamaskAddress, zerohexToken, phoneNo) => {
     return new Promise(async (resolve, reject) => {
         try {
-          
+
             const query = `INSERT INTO users(username,email,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username||null}','${email||null}','${password||null}','${metamaskAddress||null}',${zerohexToken||null},'${new Date().toISOString()}','${phoneNo||null}')`
             resolve(query);
         } catch (error) {

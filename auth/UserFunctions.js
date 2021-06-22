@@ -1,39 +1,18 @@
-var sql = require("mssql");
-const config = require('../configuration/config');
-//This Function will make a connection with our database
-//----------------------------------------------------------------------
-var checkDatabaseConnection = async (address) => {
+const {
+    queryData
+} = require('../DatabaseConnection/dbConnection');
+const {
+    getUserId
+} = require('./UserQueries');
+var getID = async (metamaskAddress) => {
     return new Promise(async (resolve, reject) => {
-        sql.connect(config.config, async function (err) {
-            if (err) {
-                resolve(false);
-            } else {
-                resolve(true)
-            }
-        });
-    })
-}
-
-//This function will query data from database according to query request
-//----------------------------------------------------------------------
-var queryData = async (query) => {
-    return new Promise(async (resolve, reject) => {
-        console.log("isConnection", await checkDatabaseConnection())
-        if (await checkDatabaseConnection()) {
-            sql.query(query, (err, response) => {
-                // console.log(response)
-                if (err) {
-                    console.log("Error", err)
-                    reject(err.message);
-                } else {
-                    resolve({
-                        success: true,
-                        result: response
-                    })
-                }
-            })
-        } else {
-            reject("Database Connection Isn't Established!")
+        try {
+            const query = await getUserId(metamaskAddress);
+            const response = await queryData(query);
+            const id = response.result?.recordsets[0][0]?.id;
+            resolve(id);
+        } catch (error) {
+            reject(error.message);
         }
     })
 }
@@ -43,5 +22,5 @@ var queryData = async (query) => {
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 module.exports = {
-    queryData
+    getID
 }

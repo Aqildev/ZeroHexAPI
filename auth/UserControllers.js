@@ -3,8 +3,11 @@ var router = express.Router();
 const multer = require('multer');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokenss
 const {
+  getID
+} = require('./UserFunctions')
+const {
   queryData
-} = require('./UserFunctions');
+} = require('../DatabaseConnection/dbConnection');
 const ErrorResponse = require("../utils/errorResponse");
 const {
   secret
@@ -13,12 +16,15 @@ const {
   getUserData,
   signupInsertData,
   updateProfile,
-  getUserId,
   getUserProfile,
   insertUserProfile
 } = require('./UserQueries');
-const { json } = require('body-parser');
-const { Int } = require('mssql');
+const {
+  json
+} = require('body-parser');
+const {
+  Int
+} = require('mssql');
 //--------------------------------------------------------------------------
 //Get Users detail by their Metamask!
 exports.getUserDetail = async (req, res, next) => {
@@ -70,13 +76,8 @@ exports.signup = async (req, res, next) => {
     } else {
       const query = await signupInsertData(username, email, password, metamaskAddress, zerohexToken, phoneNo);
       const response = await queryData(query);
-      const queryID = await getUserId(metamaskAddress);
-      const resp = await queryData(queryID);
-//  console.log( "idname ==>",resp.result.recordsets[0][0].id);
-      const insertquery= await insertUserProfile(  resp.result.recordsets[0][0].id)
+      const insertquery = await insertUserProfile(await getID(metamaskAddress))
       await queryData(insertquery);
-
-      console.log(insertquery);
       res.send({
         success: true,
         token: token
@@ -94,7 +95,7 @@ exports.update = async (req, res, next) => {
   const designation = req.body.designation;
   const zerohexToken = req.body.zerohexToken;
   let user_image;
-  if(req.file){
+  if (req.file) {
 
     user_image = req.file.path;
   }
@@ -102,19 +103,15 @@ exports.update = async (req, res, next) => {
     next(new ErrorResponse(`Invalid metamask address`, 422))
   };
   try {
-  
-    const query = await getUserId(metamaskAddress);
-    const response = await queryData(query);
-    const id =response.result.recordsets[0][0].id;
-    const updateQuery=await updateProfile(id, first_name, last_name, user_image, zerohexToken, designation);
+    const updateQuery = await updateProfile(await getID(metamaskAddress), first_name, last_name, user_image, zerohexToken, designation);
     await queryData(updateQuery);
     res.send({
       success: true,
-      result:"profile updated!"      
+      result: "profile updated!"
     });
 
   } catch (error) {
-    console.log("error",error);
+    console.log("error", error);
     next(new ErrorResponse(error, 404))
   }
 };
