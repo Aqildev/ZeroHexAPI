@@ -12,8 +12,13 @@ const {
 const {
   getUserData,
   signupInsertData,
-  updateUser
+  updateProfile,
+  getUserId,
+  getUserProfile,
+  insertUserProfile
 } = require('./UserQueries');
+const { json } = require('body-parser');
+const { Int } = require('mssql');
 //--------------------------------------------------------------------------
 //Get Users detail by their Metamask!
 exports.getUserDetail = async (req, res, next) => {
@@ -33,7 +38,7 @@ exports.getUserDetail = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error)
-    next(new ErrorResponse(error.message, 404))
+    next(new ErrorResponse(error, 404))
   }
 };
 // 
@@ -65,34 +70,51 @@ exports.signup = async (req, res, next) => {
     } else {
       const query = await signupInsertData(username, email, password, metamaskAddress, zerohexToken, phoneNo);
       const response = await queryData(query);
+      const queryID = await getUserId(metamaskAddress);
+      const resp = await queryData(queryID);
+//  console.log( "idname ==>",resp.result.recordsets[0][0].id);
+      const insertquery= await insertUserProfile(  resp.result.recordsets[0][0].id)
+      await queryData(insertquery);
+
+      console.log(insertquery);
       res.send({
         success: true,
         token: token
       });
     }
   } catch (error) {
-    next(new ErrorResponse(error.message, 404))
+    next(new ErrorResponse(error, 404))
   }
 };
 //Update User data
 exports.update = async (req, res, next) => {
-  console.log("called!")
   const metamaskAddress = req.body.metamaskAddress;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
+  const first_name = req.body.first_name;
+  const last_name = req.body.last_name;
   const designation = req.body.designation;
   const zerohexToken = req.body.zerohexToken;
-  const imagePath = req.file.path;
+  let user_image;
+  if(req.file){
+
+    user_image = req.file.path;
+  }
+  if (!metamaskAddress || metamaskAddress == 0 || metamaskAddress == null) {
+    next(new ErrorResponse(`Invalid metamask address`, 422))
+  };
   try {
-    console.log(firstName, lastName, designation, zerohexToken, imagePath);
-    const query = await updateUser(metamaskAddress, firstName, lastName, designation, zerohexToken, imagePath);
+  
+    const query = await getUserId(metamaskAddress);
     const response = await queryData(query);
+    const id =response.result.recordsets[0][0].id;
+    const updateQuery=await updateProfile(id, first_name, last_name, user_image, zerohexToken, designation);
+    await queryData(updateQuery);
     res.send({
       success: true,
-      token: response
+      result:"profile updated!"      
     });
 
   } catch (error) {
-    next(new ErrorResponse(error.message, 404))
+    console.log("error",error);
+    next(new ErrorResponse(error, 404))
   }
 };

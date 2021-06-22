@@ -21,6 +21,7 @@ var queryData = async (query) => {
         console.log("isConnection", await checkDatabaseConnection())
         if (await checkDatabaseConnection()) {
             sql.query(query, (err, response) => {
+                // console.log(response)
                 if (err) {
                     console.log("Error", err)
                     reject(err.message);

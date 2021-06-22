@@ -10,7 +10,7 @@ app.use(express.json())
 app.use('/api/users', userRoutes);
 app.use(errorHandler);
 //port at which server running
-var PORT=process.env.PORT||4000;
+var PORT=process.env.PORT||5000;
 //@info server listening
 var server = app.listen(PORT, () => {
     console.log("Server is listening on port::",PORT);

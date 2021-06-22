@@ -12,10 +12,12 @@ const {
 const {
     getUserDetail,
     signup,
-    update
+    update,
+    updateProfile
 } = require('./UserControllers');
 console.log(getUserDetail)
 router.route('/getUserDetail').get(verifyToken, getUserDetail);
-router.route('/update').post(upload.single("image"), update);
+router.route('/update').patch(upload.single("image"), verifyToken,update);
+
 router.route('/signup').post(signup);
 module.exports = router;
