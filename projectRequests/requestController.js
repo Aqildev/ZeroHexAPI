@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const ErrorResponse = require("../utils/errorResponse");
 const {
     getID
 } = require('../auth/UserFunctions');
