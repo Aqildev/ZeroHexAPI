@@ -16,7 +16,7 @@ const {
     updateProfile
 } = require('./UserControllers');
 console.log(getUserDetail)
-router.route('/getUserDetail').get(verifyToken, getUserDetail);
+router.route('/getUserDetail/:metamask').get(verifyToken, getUserDetail);
 router.route('/update').patch(upload.single("image"), verifyToken, update);
 
 router.route('/signup').post(signup);

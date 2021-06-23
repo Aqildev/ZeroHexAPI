@@ -14,15 +14,15 @@ const {
 } = require('../DatabaseConnection/dbConnection');
 exports.showAllRequests = async (req, res, next) => {
     try {
-        const isServiceProvider = req.body.isServiceProvider;
-        const metamaskAddress = req.body.metamaskAddress;
+        const isServiceProvider = req.params.isServiceProvider;
+        const metamaskAddress = req.params.metamaskAddress;
         if (!isServiceProvider || isServiceProvider == undefined || isServiceProvider == '') {
             next(new ErrorResponse("Please Provide isServiceProvider", 404))
         }
         if (!metamaskAddress || metamaskAddress == undefined || metamaskAddress == '') {
             next(new ErrorResponse("Please Provide metamaskAddress", 404))
         }
-        if (isServiceProvider) {
+        if (isServiceProvider == true) {
             const query = await getAllRequests();
             const allRequests = await queryData(query);
             res.status(200).send({
