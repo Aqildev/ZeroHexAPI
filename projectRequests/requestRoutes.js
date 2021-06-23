@@ -7,7 +7,9 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 const {
-    showAllRequests
+    showAllRequests,
+    createRequest
 } = require('./requestController');
-router.route('/show_all_requests').get(showAllRequests);
+router.route('/show_all_requests').get(verifyToken, showAllRequests);
+router.route('/create_request_Async').post(verifyToken, createRequest);
 module.exports = router;
