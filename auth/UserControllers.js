@@ -28,7 +28,9 @@ const {
 //--------------------------------------------------------------------------
 //Get Users detail by their Metamask!
 exports.getUserDetail = async (req, res, next) => {
-  const metamask = req.params.metamask;
+  const {
+    metamask
+  } = req.params;
   try {
     if (!metamask || metamask == 0 || metamask == null) {
       next(new ErrorResponse(`Invalid metamask address`, 422))

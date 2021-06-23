@@ -14,8 +14,10 @@ const {
 } = require('../DatabaseConnection/dbConnection');
 exports.showAllRequests = async (req, res, next) => {
     try {
-        const isServiceProvider = req.params.isServiceProvider;
-        const metamaskAddress = req.params.metamaskAddress;
+        const {
+            isServiceProvider,
+            metamaskAddress
+        } = req.params;
         if (!isServiceProvider || isServiceProvider == undefined || isServiceProvider == '') {
             next(new ErrorResponse("Please Provide isServiceProvider", 404))
         }
