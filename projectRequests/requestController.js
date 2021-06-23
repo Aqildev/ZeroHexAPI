@@ -52,25 +52,22 @@ exports.createRequest = async (req, res, next) => {
         const metamaskAddress = req.body.metamaskAddress;
         if (!title || title == undefined || title == '') {
             next(new ErrorResponse("Please Provide Project title", 404))
-        }
-        if (!description || description == undefined || description == '') {
+        } else if (!description || description == undefined || description == '') {
             next(new ErrorResponse("Please Provide Project description", 404))
-        }
-        if (!total_budget || total_budget == undefined || total_budget == '') {
+        } else if (!total_budget || total_budget == undefined || total_budget == '') {
             next(new ErrorResponse("Please Provide Project total_budget", 404))
-        }
-        if (!submission_deadline || submission_deadline == undefined || submission_deadline == '') {
+        } else if (!submission_deadline || submission_deadline == undefined || submission_deadline == '') {
             next(new ErrorResponse("Please Provide Project submission_deadline", 404))
-        }
-        if (!metamaskAddress || metamaskAddress == undefined || metamaskAddress == '') {
+        } else if (!metamaskAddress || metamaskAddress == undefined || metamaskAddress == '') {
             next(new ErrorResponse("Please Provide Valid metamaskAddress", 404))
+        } else {
+            const query = await createRequest(await getID(metamaskAddress), title, description, total_budget, submission_deadline)
+            await queryData(query);
+            res.send({
+                success: true,
+                result: "New request published"
+            })
         }
-        const query = await createRequest(await getID(metamaskAddress), title, description, total_budget, submission_deadline)
-        await queryData(query);
-        res.send({
-            success: true,
-            result: "New request published"
-        })
     } catch (error) {
         console.log(error)
         next(new ErrorResponse(error, 404))
