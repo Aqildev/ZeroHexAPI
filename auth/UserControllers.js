@@ -53,13 +53,14 @@ exports.getUserDetail = async (req, res, next) => {
 //--------------------------------------------------------------------------
 //Signup a new account on zeroHex
 exports.signup = async (req, res, next) => {
-  console.log(req.body)
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
-  const metamaskAddress = req.body.metamaskAddress;
-  const zerohexToken = req.body.zerohexToken;
-  const phoneNo = req.body.phoneNo;
+  const {
+    username,
+    email,
+    password,
+    metamaskAddress,
+    zerohexToken,
+    phoneNo
+  } = req.body;
   if (!metamaskAddress || metamaskAddress === "" || metamaskAddress === undefined) {
     next(new ErrorResponse(`Invalid metamask address`, 422))
   }
@@ -91,11 +92,13 @@ exports.signup = async (req, res, next) => {
 };
 //Update User data
 exports.update = async (req, res, next) => {
-  const metamaskAddress = req.body.metamaskAddress;
-  const first_name = req.body.first_name;
-  const last_name = req.body.last_name;
-  const designation = req.body.designation;
-  const zerohexToken = req.body.zerohexToken;
+  const {
+    metamaskAddress,
+    first_name,
+    last_name,
+    designation,
+    zerohexToken
+  } = req.body;
   let user_image;
   if (req.file) {
 

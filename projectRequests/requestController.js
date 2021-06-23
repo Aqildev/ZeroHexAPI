@@ -47,11 +47,13 @@ exports.showAllRequests = async (req, res, next) => {
 };
 exports.createRequest = async (req, res, next) => {
     try {
-        const title = req.body.title;
-        const description = req.body.description;
-        const total_budget = req.body.total_budget;
-        const submission_deadline = req.body.submission_deadline;
-        const metamaskAddress = req.body.metamaskAddress;
+        const {
+            title,
+            description,
+            total_budget,
+            submission_deadline,
+            metamaskAddress
+        } = req.body;
         if (!title || title == undefined || title == '') {
             next(new ErrorResponse("Please Provide Project title", 404))
         } else if (!description || description == undefined || description == '') {
