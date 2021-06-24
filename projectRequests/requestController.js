@@ -7,7 +7,10 @@ const {
 const {
     getAllRequests,
     getUserRequests,
-    createRequest
+    createRequest,
+    markComplete,
+    getSubmittionRequests,
+    getSubmittedClientRequests
 } = require('./requestQueries');
 const {
     queryData
@@ -67,11 +70,53 @@ exports.createRequest = async (req, res, next) => {
         } else {
             const query = await createRequest(await getID(metamaskAddress), title, description, total_budget, submission_deadline)
             await queryData(query);
-            res.send({
+            res.status(200).send({
                 success: true,
                 result: "New request published"
             })
         }
+    } catch (error) {
+        console.log(error)
+        next(new ErrorResponse(error, 404))
+    }
+};
+exports.markRequestComplete = async (req, res, next) => {
+    try {
+        const {
+            requestId
+        } = req.body;
+        if (!requestId || requestId == undefined || requestId == '') {
+            next(new ErrorResponse("Please Provide Valid ProjectId", 404))
+        }
+        const query = await markComplete(requestId);
+        await queryData(query);
+        res.status(200).send({
+            success: true,
+            result: "Request completed"
+        })
+    } catch (error) {
+        console.log(error)
+        next(new ErrorResponse(error, 404))
+    }
+};
+exports.showOfferings = async (req, res, next) => {
+    try {
+        let allData = [];
+        const {
+            metamask
+        } = req.params;
+        if (!metamask || metamask == undefined || metamask == '') {
+            next(new ErrorResponse("Please Provide metamaskAddress", 404))
+        }
+        const id = await getID(metamask);
+        const query = await getSubmittionRequests(id);
+        const data = await queryData(query);
+        const secondQuery = await getSubmittedClientRequests(data.result.recordsets[0]);
+        const fullData = await queryData(secondQuery)
+        res.status(200).send({
+            success: true,
+            result: fullData.result.recordsets
+        })
     } catch (error) {
         console.log(error)
         next(new ErrorResponse(error, 404))

@@ -38,9 +38,49 @@ var getUserId = async (metamask) => {
         }
     })
 }
+var markComplete = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `UPDATE client_request SET isCompleted=${1} WHERE id =${id}`
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getSubmittionRequests = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("id", id);
+            const query = `SELECT request_id FROM submission WHERE user_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getSubmittedClientRequests = async (id) => {
+    let data = []
+    id.forEach(singleId => {
+        data.push(singleId.request_id)
+    });
+    console.log(data);
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM client_request WHERE id IN (${data})`;
+            resolve(query);
+
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getUserRequests,
     getAllRequests,
     getUserId,
-    createRequest
+    createRequest,
+    markComplete,
+    getSubmittionRequests,
+    getSubmittedClientRequests
 }
