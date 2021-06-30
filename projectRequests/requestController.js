@@ -122,3 +122,25 @@ exports.showOfferings = async (req, res, next) => {
         next(new ErrorResponse(error, 404))
     }
 };
+exports.showRequests = async (req, res, next) => {
+    try {
+        let allData = [];
+        const {
+            metamask,
+            isServiceProvider
+        } = req.params;
+        if (!metamask || metamask == undefined || metamask == '') {
+            next(new ErrorResponse("Please Provide metamaskAddress", 404))
+        }
+        if (!isServiceProvider || isServiceProvider == undefined || isServiceProvider == '') {
+            next(new ErrorResponse("Please Provide isServiceProvider", 404))
+        }
+        res.status(200).send({
+            success: true,
+            result: "All data available"
+        })
+    } catch (error) {
+        console.log(error)
+        next(new ErrorResponse(error, 404))
+    }
+};

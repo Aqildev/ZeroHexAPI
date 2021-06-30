@@ -10,10 +10,12 @@ const {
     showAllRequests,
     createRequest,
     markRequestComplete,
-    showOfferings
+    showOfferings,
+    showRequests
 } = require('./requestController');
 router.route('/show_all_requests/:metamaskAddress/:isServiceProvider').get(verifyToken, showAllRequests);
 router.route('/create_request_Async').post(verifyToken, createRequest);
 router.route('/mark_request_complete').post(verifyToken, markRequestComplete);
 router.route('/show_offerings/:metamask').get(verifyToken, showOfferings);
+router.route('/show_requests/:metamask/:isServiceProvider').get(verifyToken, showRequests);
 module.exports = router;
