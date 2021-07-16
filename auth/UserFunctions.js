@@ -9,8 +9,7 @@ var getID = async (metamaskAddress) => {
         try {
             const query = await getUserId(metamaskAddress);
             const response = await queryData(query);
-            const id = response.result?.recordsets[0][0]?.id;
-            resolve(id);
+            resolve(response?.result[0]?.id);
         } catch (error) {
             reject(error.message);
         }

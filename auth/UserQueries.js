@@ -1,7 +1,7 @@
 var getUserData = async (metamask) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `SELECT * FROM users WHERE metamask LIKE'${metamask}'`;
+            const query = `SELECT * FROM user WHERE metamask ='${metamask}'`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -11,7 +11,7 @@ var getUserData = async (metamask) => {
 var getUserId = async (metamask) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `SELECT id FROM users WHERE metamask LIKE'${metamask}'`;
+            const query = `SELECT id FROM user WHERE metamask LIKE'${metamask}%'`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -32,18 +32,18 @@ var getUserProfile = async (id) => {
 var insertUserProfile = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `INSERT INTO user_profiles(user_id,created_timestamp) VALUES(${id},'${new Date().toISOString()}')`
+            const query = `INSERT INTO profile(user_id,created_timestamp,modified_timestamp) VALUES(${id},'${new Date().toISOString()}','${new Date().toISOString()}')`
             resolve(query);
         } catch (error) {
             reject(error);
         }
     })
 }
-var signupInsertData = async (username, email, password, metamaskAddress, zerohexToken, phoneNo) => {
+var signupInsertData = async (metamaskAddress, zerohexToken) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            const query = `INSERT INTO users(username,email,[password],metamask,zin_in_wallet,created_timestamp,phone) VALUES('${username||null}','${email||null}','${password||null}','${metamaskAddress||null}',${zerohexToken||null},'${new Date().toISOString()}','${phoneNo||null}')`
+            const query = `INSERT INTO user(metamask,zhx_balance,created_timestamp,updated_timestamp,is_deleted) VALUES('${metamaskAddress}',${zerohexToken||null},'${new Date().toISOString()}','${new Date().toISOString()}','${false}')`
             resolve(query);
         } catch (error) {
             reject(error);
@@ -60,11 +60,22 @@ var updateProfile = async (id, first_name, last_name, user_image, zerohexToken, 
         }
     })
 }
+var updateUser = async ( metamaskAddress,zerohexToken) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `UPDATE user SET zhx_balance=${zerohexToken||null} WHERE metamask ='${metamaskAddress}'`
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getUserData,
     signupInsertData,
     updateProfile,
     getUserId,
     getUserProfile,
-    insertUserProfile
+    insertUserProfile,
+    updateUser
 }

@@ -1,15 +1,8 @@
-require('custom-env').env();
-var config = {
-  user: process.env.user,
-  password: process.env.password,
-  server: process.env.server,
-  database: process.env.database,
-  options: {
-    encrypt: true // Use this if you're on Windows Azure
-  }
-};
 module.exports = {
+  host     :'stg-zerohex-sql-node.mysql.database.azure.com',
+  user     : 'admin_stgzerohex@stg-zerohex-sql-node',
+  database:'stg_zerohex',
   secret: '6ubr]h%d{Te(yWBe5T5`kk=.hH}^?T*V',
-  config
+  password:'StaginServerZHX$11'
 };
 // exports.config = config;

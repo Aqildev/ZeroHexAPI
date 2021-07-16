@@ -17,14 +17,12 @@ const {
   signupInsertData,
   updateProfile,
   getUserProfile,
-  insertUserProfile
+  insertUserProfile,
+  updateUser
 } = require('./UserQueries');
 const {
   json
 } = require('body-parser');
-const {
-  Int
-} = require('mssql');
 //--------------------------------------------------------------------------
 //Get Users detail by their Metamask!
 exports.getUserDetail = async (req, res, next) => {
@@ -36,14 +34,15 @@ exports.getUserDetail = async (req, res, next) => {
       next(new ErrorResponse(`Invalid metamask address`, 422))
     };
     const response = await queryData(await getUserData(metamask));
-    if (response.result.recordsets[0].length > 0) {
+    if (response) {
       res.status(200).send({
         success: response.success,
-        result: response.result.recordsets
+        result:response
       });
-    } else if (response.result.recordsets[0].length == 0) {
+    } else{
       next(new ErrorResponse(`no record found against this metamask`, 400))
     }
+  
   } catch (error) {
     console.log(error)
     next(new ErrorResponse(error, 404))
@@ -54,41 +53,45 @@ exports.getUserDetail = async (req, res, next) => {
 //Signup a new account on zeroHex
 exports.signup = async (req, res, next) => {
   const {
-    username,
-    email,
-    password,
     metamaskAddress,
     zerohexToken,
-    phoneNo
   } = req.body;
-  if (!metamaskAddress || metamaskAddress === "" || metamaskAddress === undefined) {
+  if (!metamaskAddress || metamaskAddress === "" || metamaskAddress === undefined||metamaskAddress.length<42 ) {
     next(new ErrorResponse(`Invalid metamask address`, 422))
-  }
-  try {
-    const response = await queryData(await getUserData(metamaskAddress));
-    var token = jwt.sign({
-      id: metamaskAddress
-    }, secret, {
-      expiresIn: 86400 // expires in 24 hours
-    });
-    if (response.result.recordsets[0].length > 0) {
-      res.send({
-        success: true,
-        token: token
+  }else{
+    try {
+      const response = await queryData(await getUserData(metamaskAddress));
+      console.log("response",response.result.length);
+      var token = jwt.sign({
+        id: metamaskAddress
+      }, secret, {
+        expiresIn: 86400 // expires in 24 hours
       });
-    } else {
-      const query = await signupInsertData(username, email, password, metamaskAddress, zerohexToken, phoneNo);
-      const response = await queryData(query);
-      const insertquery = await insertUserProfile(await getID(metamaskAddress))
-      await queryData(insertquery);
-      res.send({
-        success: true,
-        token: token
-      });
+  
+      if (response.result.length>0) {
+        const updateUserQuery=await updateUser(metamaskAddress,zerohexToken);
+        await queryData(updateUserQuery);
+        res.send({
+          success: true,
+          token: token
+        });
+      } else {
+        const query = await signupInsertData(metamaskAddress, zerohexToken);
+        const response = await queryData(query);
+        console.log("user_id",await getID(metamaskAddress))
+        const insertquery = await insertUserProfile(await getID(metamaskAddress));
+        console.log("insertquery",insertquery)
+        await queryData(insertquery);
+        res.send({
+          success: true,
+          token: token
+        });
+      }
+    } catch (error) {
+      next(new ErrorResponse(error, 404))
     }
-  } catch (error) {
-    next(new ErrorResponse(error, 404))
   }
+
 };
 //Update User data
 exports.update = async (req, res, next) => {

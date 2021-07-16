@@ -1,26 +1,24 @@
-var sql = require("mssql");
-const config = require('../configuration/config');
+var mysql= require('mysql');
+var {password,host,user,database}=require('../configuration/config')
 //This Function will make a connection with our database
 //----------------------------------------------------------------------
-var checkDatabaseConnection = async (address) => {
-    return new Promise(async (resolve, reject) => {
-        sql.connect(config.config, async function (err) {
-            if (err) {
-                resolve(false);
-            } else {
-                resolve(true)
-            }
-        });
-    })
-}
+var config={
+    host,
+    user,
+    password,
+    database,
+    ssl: {
+        rejectUnauthorized: true,
+    }
+  }
+var connection = mysql.createConnection(config);
+connection.connect();
 
 //This function will query data from database according to query request
 //----------------------------------------------------------------------
 var queryData = async (query) => {
     return new Promise(async (resolve, reject) => {
-        console.log("isConnection", await checkDatabaseConnection())
-        if (await checkDatabaseConnection()) {
-            sql.query(query, (err, response) => {
+        connection.query(query, (err, response) => {
                 // console.log(response)
                 if (err) {
                     console.log("Error", err)
@@ -32,9 +30,6 @@ var queryData = async (query) => {
                     })
                 }
             })
-        } else {
-            reject("Database Connection Isn't Established!")
-        }
     })
 }
 //----------------------------------------------------------------------
