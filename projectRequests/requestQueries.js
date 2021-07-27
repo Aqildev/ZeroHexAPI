@@ -11,7 +11,37 @@ var getUserRequests = async (id) => {
 var createRequest = async (id, title, description, total_budget, submission_deadline) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `INSERT INTO client_request(user_id,title,description,total_budget,submission_deadline,timestamp,status,isAccepted,isCompleted,newAction) VALUES(${id},'${title}','${description}',${total_budget},'${submission_deadline}','${new Date().toISOString()}',${0},${0},${0},${0})`;
+            const query = `INSERT INTO client_request(user_id,title,description,total_budget_zhx,submission_deadline,timestamp,status) VALUES(${id},'${title}','${description}',${total_budget},'${submission_deadline}','${new Date()}','open')`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var createSubmission = async (id, client_request_id, status, zhx_budget, handshake_transaction_hash,final_transaction_hash) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `INSERT INTO submission(user_id,client_request_id,status,zhx_budget,handshake_transaction_hash,final_transaction_hash,timestamp) VALUES(${id},'${client_request_id}','${status}',${zhx_budget},'${handshake_transaction_hash}||null','${final_transaction_hash}||null','${new Date()}')`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var createSubmissionAttachment = async (id, url, size, file_type, name) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `INSERT INTO submission_attachment(submission_id,url,size,file_type,name,attachment_type) VALUES(${id},'${url}',${size},'${file_type}','${name}','null')`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var createRequestAttachments = async (id, url, size, file_type, name) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `INSERT INTO request_attachment(request_id,url,size,file_type,name) VALUES(${id},'${url}',${size},'${file_type}','${name}')`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -21,7 +51,37 @@ var createRequest = async (id, title, description, total_budget, submission_dead
 var getAllRequests = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `SELECT * FROM client_request`;
+            const query = `SELECT * FROM client_request WHERE status ='open'`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getAllClientRequest = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM client_request WHERE id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getAllRequestAttachments = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM submission WHERE client_request_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getAllSubmissions = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM request_attachment WHERE request_id =${id}`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -38,10 +98,20 @@ var getUserId = async (metamask) => {
         }
     })
 }
-var markComplete = async (id) => {
+var markOpen = async (request_id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `UPDATE client_request SET isCompleted=${1} WHERE id =${id}`
+            const query = `UPDATE client_request SET status='open' WHERE id =${request_id}`
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var markClose = async (request_id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `UPDATE client_request SET status='close' WHERE id =${request_id}`
             resolve(query);
         } catch (error) {
             reject(error);
@@ -80,7 +150,14 @@ module.exports = {
     getAllRequests,
     getUserId,
     createRequest,
-    markComplete,
+    markClose,
+    markOpen,
     getSubmittionRequests,
-    getSubmittedClientRequests
+    getSubmittedClientRequests,
+    createRequestAttachments,
+    createSubmission,
+    createSubmissionAttachment,
+    getAllClientRequest,
+    getAllRequestAttachments,
+    getAllSubmissions
 }

@@ -286,7 +286,8 @@
                             "items": [
                                 {
                                     "id": "workbench.action.toggleFullScreen",
-                                    "label": "&&Full Screen"
+                                    "label": "&&Full Screen",
+                                    "checked": true
                                 },
                                 {
                                     "id": "workbench.action.toggleZenMode",
@@ -1447,11 +1448,12 @@
             "folder": "file:///Users/macbookpro/Desktop/My%20Mac/Data/zinFinance/ZeroHex-API",
             "backupPath": "/Users/macbookpro/Desktop/My Mac/Data/zinFinance/ZeroHex-API/~/.vscode-root/Backups/582f71e51de8b10c8e726b3d7949b543",
             "uiState": {
-                "mode": 1,
-                "x": 208,
-                "y": 66,
+                "mode": 3,
+                "display": 2077750329,
                 "width": 994,
-                "height": 768
+                "height": 768,
+                "x": 273,
+                "y": 79
             }
         },
         "openedWindows": []

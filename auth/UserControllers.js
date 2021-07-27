@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-const multer = require('multer');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokenss
 const {
   getID
@@ -69,8 +68,11 @@ exports.signup = async (req, res, next) => {
       });
   
       if (response.result.length>0) {
+        console.log("user_id",await getID(metamaskAddress))
         const updateUserQuery=await updateUser(metamaskAddress,zerohexToken);
         await queryData(updateUserQuery);
+        const insertquery = await insertUserProfile(await getID(metamaskAddress));
+        await queryData(insertquery);
         res.send({
           success: true,
           token: token
@@ -80,7 +82,6 @@ exports.signup = async (req, res, next) => {
         const response = await queryData(query);
         console.log("user_id",await getID(metamaskAddress))
         const insertquery = await insertUserProfile(await getID(metamaskAddress));
-        console.log("insertquery",insertquery)
         await queryData(insertquery);
         res.send({
           success: true,
@@ -100,18 +101,21 @@ exports.update = async (req, res, next) => {
     first_name,
     last_name,
     designation,
-    zerohexToken
+    email
   } = req.body;
   let user_image;
   if (req.file) {
 
     user_image = req.file.path;
   }
+
   if (!metamaskAddress || metamaskAddress == 0 || metamaskAddress == null) {
     next(new ErrorResponse(`Invalid metamask address`, 422))
   };
   try {
-    const updateQuery = await updateProfile(await getID(metamaskAddress), first_name, last_name, user_image, zerohexToken, designation);
+    console.log("updated called!",await getID(metamaskAddress))
+    const updateQuery = await updateProfile(await getID(metamaskAddress), first_name, last_name, user_image, email, designation);
+    console.log("update query",updateQuery)
     await queryData(updateQuery);
     res.send({
       success: true,

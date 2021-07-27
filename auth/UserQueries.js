@@ -50,10 +50,10 @@ var signupInsertData = async (metamaskAddress, zerohexToken) => {
         }
     })
 }
-var updateProfile = async (id, first_name, last_name, user_image, zerohexToken, designation) => {
+var updateProfile = async (id, first_name, last_name, user_image, email, designation) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `UPDATE user_profiles SET first_name='${first_name||''}',last_name='${last_name||''}',user_image='${user_image||null}',created_timestamp='${new Date().toISOString()}',modified_timestamp='${new Date().toISOString()}',zin_balance=${zerohexToken||null},designation='${designation||''}' WHERE user_id =${id}`
+            const query = `UPDATE profile SET first_name='${first_name||''}',last_name='${last_name||''}',user_image='${user_image||null}',created_timestamp='${new Date().toISOString()}',modified_timestamp='${new Date().toISOString()}',email='${email||null}',designation='${designation||''}' WHERE user_id =${id}`
             resolve(query);
         } catch (error) {
             reject(error);
