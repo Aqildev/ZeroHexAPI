@@ -30,7 +30,7 @@ router.route('/mark_request_close').patch(verifyToken, markRequestClose);
 //this api will be called on service provider offering tab
 router.route('/show_offerings/:metamask').get(verifyToken, showOfferings);
 router.route('/submission_insert').post(verifyToken,upload.array("images",10),submissionInsert);
-router.route('/show_request_Details/:client_request_id').get(verifyToken, requestDetailPage);
+router.route('/show_request_Details/:client_request_id/:isServiceProvider').get(verifyToken, requestDetailPage);
 
 
 module.exports = router;

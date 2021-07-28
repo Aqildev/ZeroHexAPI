@@ -21,7 +21,7 @@ var getUserId = async (metamask) => {
 var getUserProfile = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `SELECT * FROM user_profiles WHERE user_id = ${id}`;
+            const query = `SELECT * FROM profile WHERE user_id = ${id}`;
             resolve(query);
         } catch (error) {
             reject(error);

@@ -16,9 +16,14 @@ const {
     createSubmission,
     createSubmissionAttachment,
     getAllClientRequest,
-    getAllRequestAttachments,
-    getAllSubmissions
+    getSubmissions,
+    getRequestAttachments,
+    getAllProjects,
+    getSubmissionAttachments
 } = require('./requestQueries');
+const{
+    getUserProfile
+}=require('../auth/UserQueries');
 const {
     queryData
 } = require('../DatabaseConnection/dbConnection');
@@ -212,26 +217,78 @@ exports.submissionInsert = async (req, res, next) => {
 };
 exports.requestDetailPage = async (req, res, next) => {
     try {
-        let data=[]
+        let IsServiceProviderData={};
+        let clientData={};
+        let projectData={};
+        let profileData={};
+        let submissions=[];
+        let submissionAttachments={}
         const{
-            client_request_id
+            client_request_id,
+            isServiceProvider
         }=req.params;
         if (!client_request_id || client_request_id == undefined || client_request_id == '') {
             next(new ErrorResponse("Please Provide Project client_request_id", 404))
         }else{
-            let query=await getAllClientRequest(client_request_id);
-            data.push(await queryData(query));
-            let secondQuery=await getAllRequestAttachments(client_request_id);
-            data.push(await queryData(secondQuery));
-            let thirdQuery=await getAllSubmissions(client_request_id);
-            data.push(await queryData(thirdQuery));
-            res.status(200).send({
-             success: true,
-             result:data
-            })
+                let query=await getAllClientRequest(client_request_id);
+                let clientRequests=await queryData(query);
+                if(clientRequests.result.length>0){   
+                    projectData.title= clientRequests.result[0].title;
+                    projectData.description= clientRequests.result[0].description;
+                    projectData.budget= clientRequests.result[0].total_budget_zhx;
+                    projectData.createdDate= clientRequests.result[0].timestamp;
+                    projectData.status= clientRequests.result[0].status;
+                    projectData.submissionDeadline= clientRequests.result[0].submission_deadline;
+                    IsServiceProviderData.projectData=projectData;
+                    let secondQuery=await getRequestAttachments(client_request_id);
+                    let requestAttachments=await queryData(secondQuery);
+                    if(requestAttachments.result.length){
+                        IsServiceProviderData.projectData.projectAttachments=requestAttachments.result;
+                    }
+                if(isServiceProvider===true){
+                    let profileQuery=await getUserProfile(clientRequests.result[0].user_id);
+                    let profiledata=await queryData(profileQuery);
+                    profileData.firstName=profiledata.result[0].first_name;
+                    profileData.LastName=profiledata.result[0].last_name;
+                    profileData.ImageUrl=profiledata.result[0].user_image;
+                    profileData.joiningDate=profiledata.result[0].created_timestamp;
+                    let allProjectsQuery=await getAllProjects(clientRequests.result[0].user_id);
+                    let allProjectsData=await queryData(allProjectsQuery);
+                    profileData.allProjects=allProjectsData.result.length;
+                    IsServiceProviderData.profileData=profileData;
+                    res.status(200).send({
+                        success: true,
+                        result:IsServiceProviderData
+                       })
+                }else{
+                    console.log("else");
+                    clientData.projectData=projectData;
+                    if(requestAttachments.result.length){
+                        clientData.projectData.projectAttachments=requestAttachments.result;
+                    }      
+                    let submissionQuery=await getSubmissions(client_request_id);
+                    let allSubmissions=await queryData(submissionQuery);
+                    for(i=0;i<allSubmissions.result.length;i++){
+                      let submissionAttachmentQuery=await getSubmissionAttachments(allSubmissions.result[i].id);
+                     let subAttachments=await queryData(submissionAttachmentQuery);
+                     let getUserQuery=await getUserProfile(allSubmissions.result[i].user_id);
+                     let userDetail=await queryData(getUserQuery);
+                     profileData.firstName=userDetail.result[0].first_name;
+                     profileData.LastName=userDetail.result[0].last_name;
+                     profileData.ImageUrl=userDetail.result[0].user_image;
+                     submissions.push({submission:allSubmissions.result[i],submissionAttachments:subAttachments.result,userProfile:profileData})
+                    }
+                    clientData.submissions=submissions;      
+                    res.status(200).send({
+                        success: true,
+                        result:clientData
+                       })
+                }
+            }
+            else{
+                next(new ErrorResponse("No record found against this request id", 404))
+            }
         }
-    
-
     } catch (error) {
         console.log(error)
         next(new ErrorResponse(error, 404))

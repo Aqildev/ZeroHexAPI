@@ -21,7 +21,7 @@ var createRequest = async (id, title, description, total_budget, submission_dead
 var createSubmission = async (id, client_request_id, status, zhx_budget, handshake_transaction_hash,final_transaction_hash) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `INSERT INTO submission(user_id,client_request_id,status,zhx_budget,handshake_transaction_hash,final_transaction_hash,timestamp) VALUES(${id},'${client_request_id}','${status}',${zhx_budget},'${handshake_transaction_hash}||null','${final_transaction_hash}||null','${new Date()}')`;
+            const query = `INSERT INTO submission(user_id,client_request_id,status,zhx_budget,handshake_transaction_hash,final_transaction_hash,timestamp) VALUES(${id},'${client_request_id}','${status}',${zhx_budget},'${handshake_transaction_hash}||null','${final_transaction_hash}||null','${new Date().toISOString()}')`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -58,6 +58,16 @@ var getAllRequests = async () => {
         }
     })
 }
+var getAllProjects = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM client_request WHERE user_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 var getAllClientRequest = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -68,7 +78,7 @@ var getAllClientRequest = async (id) => {
         }
     })
 }
-var getAllRequestAttachments = async (id) => {
+var getSubmissions = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const query = `SELECT * FROM submission WHERE client_request_id =${id}`;
@@ -78,10 +88,20 @@ var getAllRequestAttachments = async (id) => {
         }
     })
 }
-var getAllSubmissions = async (id) => {
+var getRequestAttachments = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const query = `SELECT * FROM request_attachment WHERE request_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getSubmissionAttachments = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM submission_attachment WHERE submission_id =${id}`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -158,6 +178,8 @@ module.exports = {
     createSubmission,
     createSubmissionAttachment,
     getAllClientRequest,
-    getAllRequestAttachments,
-    getAllSubmissions
+    getSubmissions,
+    getRequestAttachments,
+    getAllProjects,
+    getSubmissionAttachments
 }
