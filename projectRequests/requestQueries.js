@@ -168,6 +168,41 @@ var getUserId = async (metamask) => {
         }
     })
 }
+var submissionUpdate = async (submission_id,status,transaction_hash) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if(status==2){
+                const query = `UPDATE submission SET status=${2},handshake_transaction_hash='${transaction_hash}||${null}' WHERE id =${submission_id}`
+            }else if(status==3){
+                const query = `UPDATE submission SET status=${3},final_transaction_hash='${transaction_hash}||${null}' WHERE id =${submission_id}`
+            }else if(status==5){
+                const query = `UPDATE submission SET status=${5},dispute_transaction_hash='${transaction_hash}||${null}' WHERE id =${submission_id}`
+            }
+            else{
+                const query = `UPDATE submission SET status=${status} WHERE id =${submission_id}`
+            }
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var updateRevision = async (submission_id,status,transaction_hash) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if(status=='acceppted'){
+                const query = `UPDATE revisions SET status='accepted',revision_transaction_hash='${transaction_hash}||${null}' WHERE submission_id =${submission_id}`
+            }else if(status=="rejected"){
+                const query = `UPDATE revisions SET status='rejected' WHERE submission_id =${submission_id}`
+            }else if(status=="cancelled"){
+                const query = `UPDATE revisions SET status='cancelled' WHERE submission_id =${submission_id}`
+            }
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 var markOpen = async (request_id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -295,5 +330,7 @@ module.exports = {
     insert_message,
     insertRevision,
     getAllSubmissionID,
-    getMessageAttachments
+    getMessageAttachments,
+    submissionUpdate,
+    updateRevision
 }

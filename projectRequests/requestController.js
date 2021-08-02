@@ -28,7 +28,9 @@ const {
     insert_message,
     insertRevision,
     getAllSubmissionID,
-    getMessageAttachments
+    getMessageAttachments,
+    submissionUpdate,
+    updateRevision
 } = require('./requestQueries');
 const{
     getUserProfile
@@ -481,12 +483,90 @@ exports.deliver = async (req, res, next) => {
         }else if(!req.files || req.files == undefined || req.files == ''){
             next(new ErrorResponse("Please Provide files to deliever", 404))
         }else {
-           let messageQuery=await insertRevision(submission_id,price,description);
-           await queryData(messageQuery);
+            if(req.files){
+                for(i=0;i<req.files.length;i++){
+                 let attachment_type=req.files[i].originalname;
+                  attachment_type=null;
+                  const query=await createSubmissionAttachment(submission_id,req.files[i].path,req.files[i].size,req.files[i].mimetype,req.files[i].filename,attachment_type);
+                  await queryData(query);
+                }}
            res.status(200).send({
             success: true,
-            result:"revision Inserted!"
+            result:"project delivered"
            })
+        }
+    } catch (error) {
+        console.log(error)
+        next(new ErrorResponse(error, 404))
+    }
+};
+exports.submissionUpdate = async (req, res, next) => {
+    try {
+        const {
+            submission_id,
+            status,
+            transaction_hash,
+            isServiceProvider
+        } = req.body;
+        if (!submission_id || submission_id == undefined || submission_id == '') {
+            next(new ErrorResponse("Please Provide submission_id", 404))
+        }else if(!status|| status == undefined || status == ''){
+            next(new ErrorResponse("Please Provide status", 404))
+        }else if(isServiceProvider==false) {
+            let submissionUpdateQuery=await submissionUpdate(submission_id,status,transaction_hash);
+            await queryData(submissionUpdateQuery);
+           res.status(200).send({
+            success: true,
+            result:"Submission updated"
+           })
+        }else{
+            next(new ErrorResponse("service provider can't update submission", 404))
+        }
+    } catch (error) {
+        console.log(error)
+        next(new ErrorResponse(error, 404))
+    }
+};
+xports.revisionUpdate = async (req, res, next) => {
+    try {
+        const {
+            submission_id,
+            status,
+            transaction_hash,
+            isServiceProvider
+        } = req.body;
+        if (!submission_id || submission_id == undefined || submission_id == '') {
+            next(new ErrorResponse("Please Provide submission_id", 404))
+        }else if(!status|| status == undefined || status == ''){
+            next(new ErrorResponse("Please Provide status", 404))
+        }else if(status=="accpted"&&!transaction_hash || transaction_hash == undefined || transaction_hash == '') {
+            next(new ErrorResponse("accepted status should have transaction hash", 404))
+        }
+        else if(!isServiceProvider || isServiceProvider == undefined || isServiceProvider == '') {
+        }else{
+           if(isServiceProvider==true){
+            if(status=="cancelled"){
+                let query=await updateRevision(submission_id,status,transaction_hash);
+                await queryData(query);
+                res.status(200).send({
+                    success: true,
+                    result:"revision updated"
+                   })
+            }else{
+                next(new ErrorResponse("Invalid status", 404))
+            }
+           }else{
+               if(status=='accpeted'||status=="rejected"){
+                let query=await updateRevision(submission_id,status,transaction_hash);
+                await queryData(query);
+                res.status(200).send({
+                    success: true,
+                    result:"revision updated"
+                   })
+               }else{
+                next(new ErrorResponse("Invalid status", 404))
+            }
+           }
         }
     } catch (error) {
         console.log(error)
