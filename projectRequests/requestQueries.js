@@ -304,7 +304,28 @@ var insertRevision = async (submission_id, price, description) => {
     })
 }
 
-
+var getSubmissionBudget = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("id", id);
+            const query = `SELECT zhx_budget FROM submission WHERE id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getRevisionsBudget = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("id", id);
+            const query = `SELECT price FROM revisions WHERE submission_id =${id} and status='accepted`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getUserRequests,
     getAllRequests,
@@ -332,5 +353,7 @@ module.exports = {
     getAllSubmissionID,
     getMessageAttachments,
     submissionUpdate,
-    updateRevision
+    updateRevision,
+    getSubmissionBudget,
+    getRevisionsBudget
 }

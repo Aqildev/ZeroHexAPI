@@ -30,7 +30,9 @@ const {
     getAllSubmissionID,
     getMessageAttachments,
     submissionUpdate,
-    updateRevision
+    updateRevision,
+    getRevisionsBudget,
+    getSubmissionBudget
 } = require('./requestQueries');
 const{
     getUserProfile
@@ -527,7 +529,7 @@ exports.submissionUpdate = async (req, res, next) => {
         next(new ErrorResponse(error, 404))
     }
 };
-xports.revisionUpdate = async (req, res, next) => {
+exports.revisionUpdate = async (req, res, next) => {
     try {
         const {
             submission_id,
@@ -568,6 +570,36 @@ xports.revisionUpdate = async (req, res, next) => {
             }
            }
         }
+    } catch (error) {
+        console.log(error)
+        next(new ErrorResponse(error, 404))
+    }
+};
+exports.getInvoice = async (req, res, next) => {
+    try {
+     const{
+      submission_id
+     }=req.params;
+     if (!submission_id || submission_id == undefined || submission_id == '') {
+        next(new ErrorResponse("Please Provide submission_id", 404))
+    }else{
+      let totalRevisionBudget;
+      let totalSubmissionBudget;
+      let budget=[];
+      let submissionBudgetQuery=await getSubmissionBudget(submission_id);
+      let submissionBudget=queryData(submissionBudgetQuery);
+      totalSubmissionBudget=submissionBudget.result[0].zhx_budget;
+      let revisionBudgetQuery=await getRevisionsBudget(submission_id);
+      let revisionBudget=queryData(revisionBudgetQuery);
+      for(i=0;i<revisionBudget.result.length;i++){
+      totalRevisionBudget+=revisionBudget.result[i].price;
+      }
+      budget.push({initialOffer:totalSubmissionBudget,revision:totalRevisionBudget,totalPrice:totalSubmissionBudget+totalRevisionBudget})
+      res.status(200).send({
+        success: true,
+        result:budget
+       })
+    }
     } catch (error) {
         console.log(error)
         next(new ErrorResponse(error, 404))
