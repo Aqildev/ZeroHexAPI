@@ -16,7 +16,10 @@ const {
     showOfferings,
     showRequests,
     submissionInsert,
-    requestDetailPage
+    requestDetailPage,
+    submission_details,
+    send_message,
+    deliver
 } = require('./requestController');
 //this api will be called on service provider feed tab(if isServiceProvider true )
 //this api will be called on client all projects tab(if isServiceProvider is false)
@@ -29,8 +32,23 @@ router.route('/mark_request_open').patch(verifyToken, markRequestOpen);
 router.route('/mark_request_close').patch(verifyToken, markRequestClose);
 //this api will be called on service provider offering tab
 router.route('/show_offerings/:metamask').get(verifyToken, showOfferings);
+
 router.route('/submission_insert').post(verifyToken,upload.array("images",10),submissionInsert);
-router.route('/show_request_Details/:client_request_id/:isServiceProvider').get(verifyToken, requestDetailPage);
+
+router.route('/show_request_details/:client_request_id/:isServiceProvider').get(verifyToken, requestDetailPage);
+
+router.route('/get_submission_detail/:submission_id/:isServiceProvider').get(verifyToken, submission_details);
+
+router.route('/send_message').post(verifyToken,upload.array("images",10),send_message);
+
+router.route('/revision').post(verifyToken,upload.array("images",10),revision);
+//deliver again!
+router.route('/deliver').post(verifyToken,upload.array("images",10),deliver);
+//Submission update query left(dynamic data)
+
+//revision patch!
+//invoice generation
+
 
 
 module.exports = router;

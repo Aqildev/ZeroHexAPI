@@ -18,20 +18,30 @@ var createRequest = async (id, title, description, total_budget, submission_dead
         }
     })
 }
-var createSubmission = async (id, client_request_id, status, zhx_budget, handshake_transaction_hash,final_transaction_hash) => {
+var createSubmission = async (id, client_request_id, zhx_budget, handshake_transaction_hash,final_transaction_hash) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `INSERT INTO submission(user_id,client_request_id,status,zhx_budget,handshake_transaction_hash,final_transaction_hash,timestamp) VALUES(${id},'${client_request_id}','${status}',${zhx_budget},'${handshake_transaction_hash}||null','${final_transaction_hash}||null','${new Date().toISOString()}')`;
+            const query = `INSERT INTO submission(user_id,client_request_id,status,zhx_budget,handshake_transaction_hash,final_transaction_hash,timestamp) VALUES(${id},'${client_request_id}','${1}',${zhx_budget},'${handshake_transaction_hash}||null','${final_transaction_hash}||null','${new Date().toISOString()}')`;
             resolve(query);
         } catch (error) {
             reject(error);
         }
     })
 }
-var createSubmissionAttachment = async (id, url, size, file_type, name) => {
+var createSubmissionAttachment = async (id, url, size, file_type, name,attachment_type) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = `INSERT INTO submission_attachment(submission_id,url,size,file_type,name,attachment_type) VALUES(${id},'${url}',${size},'${file_type}','${name}','null')`;
+            const query = `INSERT INTO submission_attachment(submission_id,url,size,file_type,name,attachment_type) VALUES(${id},'${url}',${size},'${file_type}','${name}','${attachment_type}')`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var createMessageAttachment = async (id, url, size, file_type, name,attachment_type) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `INSERT INTO messages_attachment(message_id,url,size,file_type,name) VALUES(${id},'${url}',${size},'${file_type}','${name}')`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -52,6 +62,26 @@ var getAllRequests = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const query = `SELECT * FROM client_request WHERE status ='open'`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getSubmissionStatus = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT status FROM submission WHERE client_request_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getSubmissionStatusAgainstId = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT status FROM submission WHERE id =${id}`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -108,6 +138,26 @@ var getSubmissionAttachments = async (id) => {
         }
     })
 }
+var getSingleSubmissionDetail = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM submission WHERE id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getPreviewAttachments = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `SELECT * FROM submission_attachment WHERE submission_id =${id} and attachment_type='preview'`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 var getUserId = async (metamask) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -142,7 +192,40 @@ var getSubmittionRequests = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("id", id);
-            const query = `SELECT request_id FROM submission WHERE user_id =${id}`;
+            const query = `SELECT client_request_id FROM submission WHERE user_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getAllSubmissionID = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("id", id);
+            const query = `SELECT id FROM submission WHERE client_request_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getMessage = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("id", id);
+            const query = `SELECT * FROM messages WHERE submission_id =${id}`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var getMessageAttachments = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("id", id);
+            const query = `SELECT * FROM messages_attachments WHERE message_id =${id}`;
             resolve(query);
         } catch (error) {
             reject(error);
@@ -152,7 +235,7 @@ var getSubmittionRequests = async (id) => {
 var getSubmittedClientRequests = async (id) => {
     let data = []
     id.forEach(singleId => {
-        data.push(singleId.request_id)
+        data.push(singleId.client_request_id)
     });
     console.log(data);
     return new Promise(async (resolve, reject) => {
@@ -165,6 +248,28 @@ var getSubmittedClientRequests = async (id) => {
         }
     })
 }
+var insert_message = async (submission_id, text, sender) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `INSERT INTO messages(submission_id,sender,message) VALUES(${submission_id},'${sender}','${text}')`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+var insertRevision = async (submission_id, price, description) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const query = `INSERT INTO revisions(submission_id,price,description,status,revision_transaction_hash,timestamp) VALUES(${submission_id},'${price}','${description},'pending',${null}','${new Date()}')`;
+            resolve(query);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+
 module.exports = {
     getUserRequests,
     getAllRequests,
@@ -181,5 +286,14 @@ module.exports = {
     getSubmissions,
     getRequestAttachments,
     getAllProjects,
-    getSubmissionAttachments
+    getSubmissionAttachments,
+    getSubmissionStatus,
+    getPreviewAttachments,
+    getSingleSubmissionDetail,
+    getSubmissionStatusAgainstId,
+    getMessage,
+    insert_message,
+    insertRevision,
+    getAllSubmissionID,
+    getMessageAttachments
 }
