@@ -19,7 +19,10 @@ const {
     requestDetailPage,
     submission_details,
     send_message,
-    deliver
+    deliver,
+    revision,
+    submissionUpdate,
+    revisionUpdate
 } = require('./requestController');
 //this api will be called on service provider feed tab(if isServiceProvider true )
 //this api will be called on client all projects tab(if isServiceProvider is false)
@@ -48,7 +51,6 @@ router.route('/deliver').post(verifyToken,upload.array("images",10),deliver);
 router.route('/submission_update').patch(verifyToken, submissionUpdate);
 //revision patch!
 router.route('/revision_update').patch(verifyToken, revisionUpdate);
-
 //invoice generation
 
 

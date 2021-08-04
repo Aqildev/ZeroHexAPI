@@ -423,11 +423,11 @@ exports.send_message = async (req, res, next) => {
             sender,
             submission_id,
         } = req.body;
-        console.log("files",req.files);
+        console.log(sender!="service_provider");
         if (!text || text == undefined || text == '') {
             next(new ErrorResponse("Please Provide text", 404))
         }else if (!sender || sender == undefined || sender == '') {
-            next(new ErrorResponse("Please Provide sender", 404))
+            next(new ErrorResponse("Please Provide valid sender", 404))
         }else if (!submission_id || submission_id == undefined || submission_id == '') {
             next(new ErrorResponse("Please Provide Valid submission_id", 404))
         } else {
@@ -480,6 +480,7 @@ exports.deliver = async (req, res, next) => {
         const {
             submission_id,
         } = req.body;
+        console.log(req.files);
         if (!submission_id || submission_id == undefined || submission_id == '') {
             next(new ErrorResponse("Please Provide price", 404))
         }else if(!req.files || req.files == undefined || req.files == ''){
@@ -543,8 +544,6 @@ exports.revisionUpdate = async (req, res, next) => {
             next(new ErrorResponse("Please Provide status", 404))
         }else if(status=="accpted"&&!transaction_hash || transaction_hash == undefined || transaction_hash == '') {
             next(new ErrorResponse("accepted status should have transaction hash", 404))
-        }
-        else if(!isServiceProvider || isServiceProvider == undefined || isServiceProvider == '') {
         }else{
            if(isServiceProvider==true){
             if(status=="cancelled"){
@@ -555,10 +554,12 @@ exports.revisionUpdate = async (req, res, next) => {
                     result:"revision updated"
                    })
             }else{
-                next(new ErrorResponse("Invalid status", 404))
+                next(new ErrorResponse("Status should be cancelled", 404))
             }
            }else{
-               if(status=='accpeted'||status=="rejected"){
+               console.log(status);
+               console.log(status==='accpeted');
+               if(status=="accepted"||status=="rejected"){
                 let query=await updateRevision(submission_id,status,transaction_hash);
                 await queryData(query);
                 res.status(200).send({
@@ -566,7 +567,7 @@ exports.revisionUpdate = async (req, res, next) => {
                     result:"revision updated"
                    })
                }else{
-                next(new ErrorResponse("Invalid status", 404))
+                next(new ErrorResponse("Status should be accpeted or rejected", 404))
             }
            }
         }
